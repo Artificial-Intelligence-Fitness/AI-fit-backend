@@ -7,7 +7,8 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from .models import UploadedImage
 from .forms import ImageUploadForm
-from dotenv import load_dotenv
+
+from dream_body.environment import ENV
 import os
 import json
 from openai import OpenAI
@@ -17,8 +18,7 @@ import markdown
 url = 'https://api.lightxeditor.com/external/api/v1/avatar'
 
 def get_lightX_headers():
-    load_dotenv(".env", override=True)
-    LIGHTX_KEY = os.getenv("LIGHTX_KEY")
+    LIGHTX_KEY = ENV.str("LIGHTX_KEY")
     headers = {
         'Content-Type': 'application/json',
         'x-api-key': LIGHTX_KEY
@@ -29,8 +29,7 @@ def get_lightX_headers():
 
 def get_gpt_description(img_url):
     # try:
-    load_dotenv(".env", override=True)
-    OPENAI_KEY = os.getenv("OPENAI_KEY")
+    OPENAI_KEY = ENV.str("OPENAI_KEY")
     client = OpenAI(api_key=OPENAI_KEY, base_url="https://api.proxyapi.ru/openai/v1")
     response = client.chat.completions.create(
         model="gpt-4o",
