@@ -33,7 +33,7 @@ DEBUG = ENV.bool("DEBUG", default=False)
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://e0e5-31-173-87-57.ngrok-free.app'
+    'https://542a-178-176-77-223.ngrok-free.app'
 ]
 
 

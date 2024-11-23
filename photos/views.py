@@ -7,18 +7,25 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from .models import UploadedImage
 from .forms import ImageUploadForm
-
-from dream_body.environment import ENV
+from dotenv import load_dotenv
 import os
 import json
 from openai import OpenAI
 import markdown
+import base64
 
 
 url = 'https://api.lightxeditor.com/external/api/v1/avatar'
 
+
+def encode_image(image_path):
+  image_path = "./media/uploads/" + os.path.basename(image_path)
+  with open(image_path, "rb") as image_file:
+    return base64.b64encode(image_file.read()).decode('utf-8')
+
 def get_lightX_headers():
-    LIGHTX_KEY = ENV.str("LIGHTX_KEY")
+    load_dotenv(".env", override=True)
+    LIGHTX_KEY = os.getenv("LIGHTX_KEY")
     headers = {
         'Content-Type': 'application/json',
         'x-api-key': LIGHTX_KEY
@@ -27,18 +34,26 @@ def get_lightX_headers():
     return headers
 
 
-def get_gpt_description(img_url):
+def get_gpt_description(image_path):
     # try:
-    OPENAI_KEY = ENV.str("OPENAI_KEY")
+    base64_image = encode_image(image_path)
+    load_dotenv(".env", override=True)
+    OPENAI_KEY = os.getenv("OPENAI_KEY")
     client = OpenAI(api_key=OPENAI_KEY, base_url="https://api.proxyapi.ru/openai/v1")
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4-vision-preview",
         messages=[
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "What exercises should i do to gain more muscle mass?. Write answer in markdown format."},
-                    {"type": "image_url", "image_url": {"url": img_url}}
+                    {
+                        "type": "text", 
+                        "text": "What exercises should i do to gain more muscle mass?. Write answer in markdown format."
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+                    }
                 ]
             }
         ],
@@ -88,7 +103,7 @@ def upload_image(request):
                 return redirect('check_status', image_id=uploaded_image.id)
         
         # Handle error if API request fails
-        return JsonResponse({'error': 'Failed to initiate processing'}, status=500)
+        return JsonResponse(response.json(), status=500)
     else:
         form = ImageUploadForm()
     
