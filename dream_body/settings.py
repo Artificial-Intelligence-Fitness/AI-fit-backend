@@ -33,20 +33,21 @@ DEBUG = ENV.bool("DEBUG", default=False)
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://542a-178-176-77-223.ngrok-free.app'
+    'https://9a0e-83-242-179-101.ngrok-free.app'
 ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'photos',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'photos.apps.PhotosConfig',
+    'access.apps.AccessConfig',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +84,14 @@ WSGI_APPLICATION = 'dream_body.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {"default": dj_database_url.config()}
+DATABASES = {"default": dj_database_url.config()} # postgres
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -127,7 +135,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
 # Cache
 
 REDIS_URL = ENV.str("REDIS_URL")
+
+
+AUTH_USER_MODEL = "access.User"
