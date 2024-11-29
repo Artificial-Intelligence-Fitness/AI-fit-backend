@@ -33,7 +33,7 @@ DEBUG = ENV.bool("DEBUG", default=False)
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    ENV.str("HOST_URL")
+    "https://d79a-77-91-66-29.ngrok-free.app"
 ]
 
 
@@ -46,8 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'photos.apps.PhotosConfig',
+    'common.apps.CommonConfig',
     'access.apps.AccessConfig',
+    'content.apps.ContentConfig',
+    'photos.apps.PhotosConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +144,7 @@ REDIS_URL = ENV.str("REDIS_URL")
 
 
 AUTH_USER_MODEL = "access.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+}
