@@ -7,15 +7,16 @@ from rest_framework.mixins import (
     UpdateModelMixin,
 )
 
-from .querysets import PUBLIC_POSTS_QUERYSET
+from .querysets import PUBLIC_POSTS_QUERYSET, ALL_POSTS_QUERYSET
 from .serializers import PostSerializer
 from .filters import PostFilter
-
+from api.permissions import AllowAny, IsAuthenticated
 
 class PostAPIView(GenericAPIView):
     queryset = PUBLIC_POSTS_QUERYSET
     serializer_class = PostSerializer
     filterset_class = PostFilter
+    permission_classes = [AllowAny]
 
     search_fields = ["owner__name", "title"]
     ordering_fields = ["created_at"]
@@ -37,3 +38,14 @@ class PostListCreateView(ListModelMixin, CreateModelMixin, PostAPIView):
 class PostRetrieveUpdateDestroyView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, PostAPIView):
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+
+
+class PostMeListView(ListModelMixin, PostAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return ALL_POSTS_QUERYSET.filter(owner=self.request.user)
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

@@ -6,8 +6,6 @@ class PostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-    class Meta:
-        model = Post
         fields = [
             "id",
             "uuid",
