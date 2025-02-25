@@ -1,20 +1,18 @@
-# Базовый образ Python
 FROM python:3.9-slim
 
-# Установка рабочей директории
+# Install system dependencies including PostgreSQL client
+RUN apt-get update && apt-get install -y \
+    gcc \
+    postgresql-client \
+    libpq-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Копирование зависимостей
 COPY requirements.txt .
 
-# Установка зависимостей
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копирование кода приложения
-COPY . .
-
-# Сборка статических файлов
-RUN python manage.py collectstatic --noinput
-
-# Команда для запуска сервера
-CMD ["gunicorn", "myproject.wsgi:application", "--bind", "0.0.0.0:8000"]
+# ... rest of your Dockerfile
