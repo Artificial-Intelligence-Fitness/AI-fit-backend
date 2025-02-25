@@ -1,6 +1,18 @@
 version: "3"
 
 services:
+
+  web:
+    build: .
+    command: gunicorn dream_body.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
   db:
     image: postgres:13.2-alpine
     volumes:
