@@ -40,16 +40,14 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'common.apps.CommonConfig',
-    'access.apps.AccessConfig',
-    'content.apps.ContentConfig',
-    'photos.apps.PhotosConfig',
     'api.apps.ApiConfig',
 ]
 
@@ -143,7 +141,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REDIS_URL = ENV.str("REDIS_URL")
 
 
-AUTH_USER_MODEL = "access.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
